@@ -2,14 +2,6 @@ import { Fn } from 'types/fn'
 import { Unknown } from 'types/unknown'
 import { cast } from 'utils/cast'
 
-export type Given<Value, Result = never> = {
-    when<const LocalValue extends Unknown<Value>, const LocalResult>(
-        value: LocalValue,
-        callback: Callback<LocalValue, LocalResult>,
-    ): Given<Exclude<Value, LocalValue>, Result | WithResult<Value, LocalResult>>
-    otherwise<const LocalResult = never>(callback: Callback<Value, LocalResult>): Result | WithResult<Value, LocalResult>
-}
-
 /**
  *
  * @param {Value} value - The value to be evaluated
@@ -29,6 +21,14 @@ export type Given<Value, Result = never> = {
  *
  */
 export const given = <const Value>(value: Value): Given<Value> => __given__(value)
+
+export type Given<Value, Result = never> = {
+    when<const LocalValue extends Unknown<Value>, const LocalResult>(
+        value: LocalValue,
+        callback: Callback<LocalValue, LocalResult>,
+    ): Given<Exclude<Value, LocalValue>, Result | WithResult<Value, LocalResult>>
+    otherwise<const LocalResult = never>(callback: Callback<Value, LocalResult>): Result | WithResult<Value, LocalResult>
+}
 
 type Callback<Value, Result> = Fn<[value: Value], Result>
 type WithResult<Value, Result> = Value extends never ? never : Result
